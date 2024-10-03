@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dockerized Webpages with Nginx</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.24/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto my-8">
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold mb-6">Dockerizing Static Webpages using Nginx</h1>
+            <h1 class="text-3xl font-bold mb-6">
+            Author Page
+            </h1>
+            <a href="author.html" class="text-blue-500">Author</a>
+            <p class="mb-4">This guide provides an example configuration for Docker and Nginx to serve static webpages with a reverse proxy setup.</p>
+
+            <h2 class="text-2xl font-semibold mb-4">Nginx Configuration</h2>
+            <pre class="bg-gray-200 p-4 rounded"><code>
+events {}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /usr/share/nginx/html;
+
+    location / {
+        index index.html index.htm;
+        try_files $uri $uri/ =404;
+    }
+}
+            </code></pre>
+
+            <h2 class="text-2xl font-semibold mb-4">Dockerfile</h2>
+            <pre class="bg-gray-200 p-4 rounded"><code>
+FROM nginx:1.27.0
+COPY ./nginx /etc/nginx/conf.d:rw
+COPY ./static /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+            </code></pre>
+
+            <h2 class="text-2xl font-semibold mb-4">Docker Compose File</h2>
+            <pre class="bg-gray-200 p-4 rounded"><code>
+version: '3.8'
+services:
+  webservice:
+    build: 
+      context: /webapp
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+            </code></pre>
+        </div>
+    </div>
+</body>
+</html>
